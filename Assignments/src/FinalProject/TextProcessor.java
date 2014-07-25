@@ -1,9 +1,14 @@
 package FinalProject;
 
+import java.io.PrintWriter;
+
 /**
  * Created by Tom on 7/21/2014.
  */
+@SuppressWarnings("UnusedDeclaration")
 public class TextProcessor {
+    private ChainingHashTable dictionary;
+
 
     public static void main(String[] args0) {
 
@@ -19,7 +24,8 @@ public class TextProcessor {
 // Please note that the above method should only be called once for the remainder of the life of the program. The rest of
 // these following methods below will be called as many times as the user asks for with their respective option.
     }
-        public static void spellcheckWord(String word, boolean fileWrite){
+
+    public static void spellcheckWord(String word, boolean fileWrite) {
 // This driver method should pass the user word to your spell checker part of your program. First it should check to see
 // if it is a known word, then it should print the following message and return: <"user word"> is a known word!
 // If the word is not a known word then your program should generate all possible alternates described above in the background section.
@@ -53,7 +59,8 @@ public class TextProcessor {
     }
 
     public static void decompressFile(String srcFile, String dstFile) {
-//            * This driver method should pass the user source and destination file to the file compression part of your program. The method should first check to see if the srcFile is a valid file before passing it to your compressor, if the file is invalid then it should print the following message and return:
+//            * This driver method should pass the user source and destination file to the file compression part of your program.
+// The method should first check to see if the srcFile is a valid file before passing it to your compressor, if the file is invalid then it should print the following message and return:
 //    <"user srcFile"> is invalid for compression!
 //            * If the file is valid then it should pass the file to your compression program to be compressed in a new file dstFile given by the user.
 //            * After the call for compression, this method should check to see if the now compressed dstFile is a valid file, if it is then you should print:
@@ -64,7 +71,10 @@ public class TextProcessor {
 
     public static void transmitFile(String srcFile, String statsFile) {
 //            * Download the new DeviceManager.java and add it to the package.
-//            * This driver method should pass the user source file to the transmitFile method of the DeviceManager class. First it should check to see if the srcFile is a valid file before passing, if the file is invalid then it should print the following message and return:
+//            * This driver method should pass the user source file to the transmitFile method of the DeviceManager class.
+// First it should check to see if the srcFile is a valid file before passing, if the file is invalid then it should print the following message and return:
 //    <"user srcFile"> is invalid for file transfer!
     }
+
+    private
 }
