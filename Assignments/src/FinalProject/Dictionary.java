@@ -5,7 +5,10 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
- * Created by nordgran on 7/25/2014.
+ *
+ *
+ *
+ *
  */
 @SuppressWarnings("ConstantConditions")
 public class Dictionary {
@@ -37,7 +40,7 @@ public class Dictionary {
         word = word.toLowerCase();
         int alternateCount = 0;
         String maxFreq = "";
-        int i = 0, j = 0;
+        int i, j = 0;
 
         if (this.contains(word))
             return word;
