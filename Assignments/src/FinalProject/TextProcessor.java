@@ -1,22 +1,47 @@
 package FinalProject;
 
-import java.io.PrintWriter;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.util.Scanner;
 
 /**
  * Created by Tom on 7/21/2014.
  */
 @SuppressWarnings("UnusedDeclaration")
 public class TextProcessor {
-    private ChainingHashTable dictionary;
+    private static Dictionary dictionary;
 
 
     public static void main(String[] args0) {
+//        initializeComponents(args0[0]);
+        initializeComponents("wordstats1.txt");
+        System.out.println("System is initialized ...");
 
-        //Some
+        Scanner scanner = new Scanner(new InputStreamReader(System.in));
 
+        while (true) {
+            String input = scanner.nextLine();
+
+            if (input.equals("1")) {
+                System.out.println("Please enter a text word: ");
+                input = scanner.nextLine();
+                spellcheckWord(input,false);
+                continue;
+            }
+            if (input.equals("exit")) {
+                break;
+            }
+        }
     }
 
     public static void initializeComponents(String statsFile) {
+        File inputFile = new File(statsFile);
+        if (!inputFile.isFile()) {
+            System.out.println("Invalid word stats file argument!");
+            return;
+        }
+
+        dictionary = new Dictionary(inputFile, 2000);
 // This driver method should first create a file from statsFile and check it for validity, then it should instantiates
 // your spell checker component using the file, your compression component, and the device manager that is newly given below.
 // Since your program is interactive, it is best to initialize all three in this method once for the remainder of the life of the program.
@@ -26,6 +51,16 @@ public class TextProcessor {
     }
 
     public static void spellcheckWord(String word, boolean fileWrite) {
+        String returnedWord = dictionary.spellCheck(word, false);
+        if (returnedWord != null) {
+            if (returnedWord.equals(word))
+                System.out.println("" + word + " is a known word!\n");
+            else if (returnedWord.equals(""))
+                System.out.println("" + word + " is an unknown word!\n");
+            else
+                System.out.println("" + word + " is an unknown word! "+ returnedWord+" is a known word!\n");
+        }
+        return;
 // This driver method should pass the user word to your spell checker part of your program. First it should check to see
 // if it is a known word, then it should print the following message and return: <"user word"> is a known word!
 // If the word is not a known word then your program should generate all possible alternates described above in the background section.
@@ -75,6 +110,4 @@ public class TextProcessor {
 // First it should check to see if the srcFile is a valid file before passing, if the file is invalid then it should print the following message and return:
 //    <"user srcFile"> is invalid for file transfer!
     }
-
-    private
-}
+    }
