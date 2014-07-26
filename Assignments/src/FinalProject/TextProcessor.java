@@ -14,18 +14,28 @@ public class TextProcessor {
 
     public static void main(String[] args0) {
 //        initializeComponents(args0[0]);
-        initializeComponents("wordstats1.txt");
-        System.out.println("System is initialized ...");
+                initializeComponents("wordstats1.txt");
+        if (dictionary == null)
+            return;
+
+
 
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
 
+
         while (true) {
+            System.out.println("Please choose from the following options:");
+            System.out.println("1) Word spell check");
+            System.out.println("2) File spell check");
+            System.out.println("3) File compression");
+            System.out.println("4) File decompression");
+            System.out.println("5) File remote transfer\n");
             String input = scanner.nextLine();
 
             if (input.equals("1")) {
                 System.out.println("Please enter a text word: ");
                 input = scanner.nextLine();
-                spellcheckWord(input,false);
+                spellcheckWord(input, false);
                 continue;
             }
             if (input.equals("exit")) {
@@ -37,7 +47,7 @@ public class TextProcessor {
     public static void initializeComponents(String statsFile) {
         File inputFile = new File(statsFile);
         if (!inputFile.isFile()) {
-            System.out.println("Invalid word stats file argument!");
+            System.out.println("Invalid word stats file argument!\n");
             return;
         }
 
