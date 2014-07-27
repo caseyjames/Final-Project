@@ -2,6 +2,7 @@ package FinalProject;
 
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
@@ -45,12 +46,6 @@ public class TextProcessor {
             } else if (input.equals("2")) {
                 System.out.println("Please enter the source file path: ");
                 input = scanner.nextLine();
-                File inputFile = new File(input);
-                if (!inputFile.isFile()) {
-                    System.out.println(input + "is invalid for spell correction!\n");
-                    continue;
-                }
-
                 System.out.println("Please enter the destination file path: ");
                 input2 = scanner.nextLine();
                 spellcheckFile(input, input2);
@@ -124,10 +119,60 @@ public class TextProcessor {
     }
 
     public static void spellcheckFile(String srcFile, String dstFile) {
+        int message = 0;
+        File inputFile = new File(srcFile);
+        if (!inputFile.isFile()) {
+            System.out.println(srcFile + "is invalid for spell correction!\n");
+            return;
+        }
+        Scanner inputFileLine = null;
+        try {
+            inputFileLine = new Scanner(inputFile);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return;
+        }
+        PrintWriter outputFile;
+        try {
+            outputFile = new PrintWriter(dstFile);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            return;
+        }
 
+        while (inputFileLine.hasNextLine()) {
+            String currentLine = inputFileLine.nextLine();
+            String[] tokens = currentLine.split("\\b");
+            String alternateWord;
+            for (int i = 0; i < tokens.length; i++) {
+                if (Character.isAlphabetic((tokens[i].codePointAt(0))) || Character.isDigit(tokens[i].charAt(0))) {
+                    alternateWord = dictionary.spellCheck(tokens[i], false);
+                    if (alternateWord != null) {
+                        if (alternateWord.equals(tokens[i]))
+                            outputFile.print(alternateWord);
+                        else if (alternateWord.equals("")) {
+                            message = 2;
+                            outputFile.print(tokens[i]);
+                        } else {
+                            if (message != 2)
+                                message = 1;
+                            outputFile.print(alternateWord);
+                        }
+                    }
+                } else {
+                    outputFile.print(tokens[i]);
+                }
+            }
+            outputFile.print("\n");
+        }
+        outputFile.close();
 
-
-
+        if (message == 0)
+            System.out.println(srcFile + " contains words with correct spelling!");
+        else if (message == 1)
+            System.out.println(srcFile + " was corrected successfully!");
+        else
+            System.out.println(srcFile + " was corrected, but it contains unknown words!");
     }
 
     public static void compressFile(String srcFile, String dstFile) {
