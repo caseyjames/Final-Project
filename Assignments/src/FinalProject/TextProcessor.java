@@ -1,8 +1,6 @@
 package FinalProject;
 
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Scanner;
 
 /**
@@ -181,6 +179,38 @@ public class TextProcessor {
     }
 
     public static void compressFile(String srcFile, String dstFile) {
+        File inputFile = new File(srcFile);
+        if (!inputFile.isFile()) {
+            System.out.println(srcFile + "is invalid for spell correction!\n");
+            return;
+        }
+        FileReader inputStream;
+        try {
+            inputStream = new FileReader(inputFile);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        BufferedReader reader = new BufferedReader(inputStream);
+
+        int[] charNumbers = new int[128];
+        int nextChar;
+
+        try {
+            while ((nextChar = reader.read()) != -1) {
+                charNumbers[nextChar]++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        for (int i = 0; i < 128; i++) {
+            if (charNumbers[i] != 0) {
+
+            }
+
+        }
 //            * This driver method should pass the user source and destination file to the file compression part of your program. The method should first check to see if the srcFile is a valid file before passing it to your compressor, if the file is invalid then it should print the following message and return:
 //    <"user srcFile"> is invalid for compression!
 //            * If the file is valid then it should pass the file to your compression program to be compressed in a new file dstFile given by the user.
