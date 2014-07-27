@@ -48,7 +48,7 @@ public class Dictionary {
         if (fileWrite) {
             try {
                 writeFile = new PrintWriter("" + word + ".txt");
-                writeFile.print("User string: " + word + "\n");
+                writeFile.print("User string: " + word + "\n\n");
             } catch (Exception e) {
                 System.err.println("Unable to write file!");
                 return "";
@@ -89,7 +89,9 @@ public class Dictionary {
         for (i = 0; i < word.length(); i++) {
             for (j = 0; j < 26; j++) {
                 StringBuilder temp = new StringBuilder(word);
-                temp.setCharAt(i, (char) (i + 97));
+                if (temp.charAt(i) == (char)(j+97))
+                    continue;
+                temp.setCharAt(i, (char) (j + 97));
                 String newWord = temp.toString();
                 if (fileWrite) {
                     writeFile.println("Substitution string: " + newWord);
@@ -100,13 +102,13 @@ public class Dictionary {
             }
         }
         if (fileWrite)
-            writeFile.println("Created " + (i * j) + " substitution alternatives\n");
+            writeFile.println("Created " + (i * (j-1)) + " substitution alternatives\n");
 
         // for loops for insertion alternatives
         for (i = 0; i <= word.length(); i++) {
             for (j = 0; j < 26; j++) {
                 StringBuilder temp = new StringBuilder(word);
-                temp.insert(i, (char) (i + 97));
+                temp.insert(i, (char) (j + 97));
                 String newWord = temp.toString();
                 if (fileWrite)
                     writeFile.println("Insertion string: " + newWord);

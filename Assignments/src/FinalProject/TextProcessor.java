@@ -32,12 +32,14 @@ public class TextProcessor {
             System.out.println("4) File decompression");
             System.out.println("5) File remote transfer\n");
             String input = scanner.nextLine();
-            String input2;
+            String input2 = null;
 
             if (input.equals("1")) {
                 System.out.println("Please enter a text word: ");
                 input = scanner.next();
-                input2 = scanner.next();
+                if( scanner.hasNext()){
+                    input2 = scanner.next("-f");
+                }
                 if (input2 != null && input2.equals("-f"))
                     spellcheckWord(input, true);
                 else
@@ -106,7 +108,7 @@ public class TextProcessor {
     }
 
     public static void spellcheckWord(String word, boolean fileWrite) {
-        String returnedWord = dictionary.spellCheck(word, false);
+        String returnedWord = dictionary.spellCheck(word, fileWrite);
         if (returnedWord != null) {
             if (returnedWord.equals(word))
                 System.out.println("" + word + " is a known word!\n");
@@ -168,13 +170,13 @@ public class TextProcessor {
         outputFile.close();
 
         if (message == 0) {
-            System.out.println(srcFile + " contains words with correct spelling!");
+            System.out.println(srcFile + " contains words with correct spelling!\n\n");
 //            inputF.delete();
         }
         else if (message == 1)
-            System.out.println(srcFile + " was corrected successfully!");
+            System.out.println(srcFile + " was corrected successfully!\n\n");
         else
-            System.out.println(srcFile + " was corrected, but it contains unknown words!");
+            System.out.println(srcFile + " was corrected, but it contains unknown words!\n\n");
     }
 
     public static void compressFile(String srcFile, String dstFile) {
