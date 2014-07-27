@@ -23,6 +23,7 @@ public class TextProcessor {
             return;
 
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
+        String input, input2;
 
         while (true) {
             System.out.println("Please choose from the following options:");
@@ -31,14 +32,14 @@ public class TextProcessor {
             System.out.println("3) File compression");
             System.out.println("4) File decompression");
             System.out.println("5) File remote transfer\n");
-            String input = scanner.nextLine();
-            String input2 = null;
+            input = scanner.next();
+            input2 = null;
 
             if (input.equals("1")) {
                 System.out.println("Please enter a text word: ");
                 input = scanner.next();
                 if( scanner.hasNext()){
-                    input2 = scanner.next("-f");
+                    input2 = scanner.next();
                 }
                 if (input2 != null && input2.equals("-f"))
                     spellcheckWord(input, true);
@@ -126,7 +127,7 @@ public class TextProcessor {
             System.out.println(srcFile + "is invalid for spell correction!\n");
             return;
         }
-        Scanner inputFileLine = null;
+        Scanner inputFileLine;
         try {
             inputFileLine = new Scanner(inputFile);
         } catch (Exception e) {
