@@ -49,7 +49,6 @@ public class TextProcessor {
                 System.out.println("Please enter the destination file path: ");
                 input2 = scanner.nextLine();
                 spellcheckFile(input, input2);
-
             } else if (input.equals("3")) {
                 System.out.println("Please enter the source file path: ");
                 input = scanner.nextLine();
@@ -132,6 +131,7 @@ public class TextProcessor {
             System.err.println(e.getMessage());
             return;
         }
+//        File inputF = new File(dstFile);
         PrintWriter outputFile;
         try {
             outputFile = new PrintWriter(dstFile);
@@ -144,7 +144,7 @@ public class TextProcessor {
             String currentLine = inputFileLine.nextLine();
             String[] tokens = currentLine.split("\\b");
             String alternateWord;
-            for (int i = 0; i < tokens.length; i++) {
+            for (int i = 1; i < tokens.length; i++) {
                 if (Character.isAlphabetic((tokens[i].codePointAt(0))) || Character.isDigit(tokens[i].charAt(0))) {
                     alternateWord = dictionary.spellCheck(tokens[i], false);
                     if (alternateWord != null) {
@@ -167,8 +167,10 @@ public class TextProcessor {
         }
         outputFile.close();
 
-        if (message == 0)
+        if (message == 0) {
             System.out.println(srcFile + " contains words with correct spelling!");
+//            inputF.delete();
+        }
         else if (message == 1)
             System.out.println(srcFile + " was corrected successfully!");
         else

@@ -136,7 +136,7 @@ public class Dictionary {
     }
 
     private int frequency(String word) {
-        int listIndex = word.hashCode() % dictionary.length;
+        int listIndex = Math.abs(word.hashCode() % dictionary.length);
         Node current = dictionary[listIndex];
         while (current != null) {
             if (current.getName().equals(word))
@@ -147,7 +147,7 @@ public class Dictionary {
     }
 
     private boolean contains(String word) {
-        int listIndex = word.hashCode() % dictionary.length;
+        int listIndex = Math.abs(word.hashCode() % dictionary.length);
         Node current = dictionary[listIndex];
         while (current != null) {
             if (current.getName().equals(word))
