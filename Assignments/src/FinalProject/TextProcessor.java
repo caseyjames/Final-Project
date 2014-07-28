@@ -22,6 +22,7 @@ public class TextProcessor {
             return;
 
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
+        Scanner lineParse;
         String input, input2;
 
         while (true) {
@@ -47,20 +48,20 @@ public class TextProcessor {
 
             } else if (input.equals("2")) {
                 System.out.println("Please enter the source file path: ");
-                input = scanner.nextLine();
+                input = scanner.next();
                 System.out.println("Please enter the destination file path: ");
-                input2 = scanner.nextLine();
+                input2 = scanner.next();
                 spellcheckFile(input, input2);
             } else if (input.equals("3")) {
                 System.out.println("Please enter the source file path: ");
-                input = scanner.nextLine();
+                input = scanner.next();
                 File inputFile = new File(input);
                 if (!inputFile.isFile()) {
-                    System.out.println(input + "is invalid for spell correction!\n");
+                    System.out.println(input + "is invalid for compression!\n");
                     continue;
                 }
                 System.out.println("Please enter the destination file path: ");
-                input2 = scanner.nextLine();
+                input2 = scanner.next();
                 compressFile(input, input2);
 
             } else if (input.equals("4")) {
@@ -215,12 +216,11 @@ public class TextProcessor {
         CharNode currentChar;
         // array to hold CharNode's that represent data for each character in the input file.
         CharNode[] charArray = new CharNode[256];
-        int index = 0;
         // loading the priority queue
         for (int i = 0; i < 256; i++) {
             if (charNumbers[i] != 0) {
                 currentChar = new CharNode((char) i, charNumbers[i]);
-                charArray[index++] = currentChar;
+                charArray[i] = currentChar;
                 pq.add(currentChar);
             }
         }
@@ -272,15 +272,6 @@ public class TextProcessor {
         outFile.print((byte) 0);
         outFile.print(0);
 
-
-        // try to close the input file
-        try {
-            reader.close();
-            inputStream.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
         // attempt to re-open the file with FileReader then use BufferedReader
         try {
             inputStream = new FileReader(inputFile);
@@ -304,9 +295,9 @@ public class TextProcessor {
         }
 
         // add remaining bits to make file of complete bytes
-        addZeros = bitString.length()%8;
+        addZeros = 8 - bitString.length()%8;
         while (addZeros > 0) {
-            bitString += "0";
+            bitString = bitString + "0";
             addZeros--;
         }
 
@@ -329,6 +320,14 @@ public class TextProcessor {
 
         // close file when all bytes are printed to file.
         outFile.close();
+
+        // re initialize outputFile to check that it is valid after printed to and closed.
+        outputFile = new File(dstFile);
+
+        if (! outputFile.isFile())
+            System.out.println(dstFile + " compression was unsuccessful!");
+        else
+            System.out.println(dstFile + " compression was successful!");
 
 //            * This driver method should pass the user source and destination file to the file compression part of your program. The method should first check to see if the srcFile is a valid file before passing it to your compressor, if the file is invalid then it should print the following message and return:
 //    <"user srcFile"> is invalid for compression!
