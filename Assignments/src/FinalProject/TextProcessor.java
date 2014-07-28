@@ -1,6 +1,7 @@
 package FinalProject;
 
 import java.io.*;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -11,8 +12,8 @@ import java.util.Scanner;
  */
 @SuppressWarnings("UnusedDeclaration")
 public class TextProcessor {
-    private static Dictionary dictionary;
 
+    private static Dictionary dictionary;
 
     public static void main(String[] args0) {
 //        initializeComponents(args0[0]);
@@ -88,6 +89,7 @@ public class TextProcessor {
                 }
             }
         }
+
     }
 
     public static void initializeComponents(String statsFile) {
@@ -179,11 +181,13 @@ public class TextProcessor {
     }
 
     public static void compressFile(String srcFile, String dstFile) {
+        // declare & instantiate input file source
         File inputFile = new File(srcFile);
         if (!inputFile.isFile()) {
             System.out.println(srcFile + "is invalid for spell correction!\n");
             return;
         }
+        // attempt to open the file with FileReader then use BufferedReader
         FileReader inputStream;
         try {
             inputStream = new FileReader(inputFile);
@@ -193,24 +197,139 @@ public class TextProcessor {
         }
         BufferedReader reader = new BufferedReader(inputStream);
 
-        int[] charNumbers = new int[128];
-        int nextChar;
+        // array to count char frequencies in file, charNumbers index is the char code
+        int[] charNumbers = new int[256];
+        int nextByte;
 
+        // try block increments frequency for charNumbers index equal to char code
         try {
-            while ((nextChar = reader.read()) != -1) {
-                charNumbers[nextChar]++;
+            while ((nextByte = reader.read()) != -1) {
+                charNumbers[nextByte]++;
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-
-        for (int i = 0; i < 128; i++) {
+        // priority queue to make binary tri
+        PriorityQueueHEAP<CharNode> pq = new PriorityQueueHEAP<CharNode>(new CharNodeComparator());
+        CharNode currentChar;
+        // array to hold CharNode's that represent data for each character in the input file.
+        CharNode[] charArray = new CharNode[256];
+        int index = 0;
+        // loading the priority queue
+        for (int i = 0; i < 256; i++) {
             if (charNumbers[i] != 0) {
-
+                currentChar = new CharNode((char) i, charNumbers[i]);
+                charArray[index++] = currentChar;
+                pq.add(currentChar);
             }
-
         }
+        // add EOF char
+        pq.add(new CharNode((char) -1, 1));
+
+        // building the binary tri
+        CharNode left;
+        CharNode right;
+        CharNode parent;
+        while (pq.size() > 1) {
+            left = pq.deleteMin();
+            right = pq.deleteMin();
+            parent = new CharNode(left, right, (left.getFreq() + right.getFreq()));
+            left.setParent(parent);
+            right.setParent(parent);
+            pq.add(parent);
+        }
+
+        // use file and PrintWriter to open file to print compressed file to.
+        File outputFile = new File(dstFile);
+        PrintWriter outFile;
+        try {
+            outFile = new PrintWriter(outputFile);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        // determine each characters encoding & set the value in it's corresponding CharNode
+        String encoding;
+        for (int i = 0; i < 256; i++) {
+            encoding = "";
+            if (charArray[i] != null) {
+                currentChar = charArray[i];
+                outFile.print(currentChar.getChar());
+                outFile.print(currentChar.getFreq());
+                while (currentChar.getParent() != null) {
+                    if (currentChar.getParent().getLeft().getChar() == currentChar.getChar())
+                        encoding = "0" + encoding;
+                    else
+                        encoding = "1" + encoding;
+                    currentChar = currentChar.getParent();
+                }
+                charArray[i].setEncoding(encoding);
+            }
+        }
+        // print end of header characters
+        outFile.print((byte) 0);
+        outFile.print(0);
+
+
+        // try to close the input file
+        try {
+            reader.close();
+            inputStream.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        // attempt to re-open the file with FileReader then use BufferedReader
+        try {
+            inputStream = new FileReader(inputFile);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        reader = new BufferedReader(inputStream);
+
+
+
+        // start reading file again to encode it from beginning
+        String bitString = "";
+        int addZeros = 0;
+        try {
+            while ((nextByte = reader.read()) != -1) {
+                bitString += charArray[nextByte].getEncoding();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // add remaining bits to make file of complete bytes
+        addZeros = bitString.length()%8;
+        while (addZeros > 0) {
+            bitString += "0";
+            addZeros--;
+        }
+
+        int bitIndex = 0;
+        byte toPrint;
+        // traverse each character in bitString and print bytes to file
+        while (bitIndex < bitString.length()) {
+            toPrint = 0;
+            for (int i = 0; i < 8; i++) {
+                if (bitString.charAt(bitIndex) == '1'){
+                    toPrint = (byte) (toPrint >>> 1);
+                    toPrint += (byte) 128;
+                }
+                else
+                    toPrint = (byte) (toPrint >>> 1);
+                bitIndex++;
+            }
+            outFile.print((char) toPrint);
+        }
+
+        // close file when all bytes are printed to file.
+        outFile.close();
+
 //            * This driver method should pass the user source and destination file to the file compression part of your program. The method should first check to see if the srcFile is a valid file before passing it to your compressor, if the file is invalid then it should print the following message and return:
 //    <"user srcFile"> is invalid for compression!
 //            * If the file is valid then it should pass the file to your compression program to be compressed in a new file dstFile given by the user.
@@ -237,4 +356,72 @@ public class TextProcessor {
 // First it should check to see if the srcFile is a valid file before passing, if the file is invalid then it should print the following message and return:
 //    <"user srcFile"> is invalid for file transfer!
     }
+
+    private static class CharNode {
+        private char data;
+        private int freq;
+        private CharNode left;
+        private CharNode right;
+        private CharNode parent;
+        private String encoding;
+
+        public CharNode(char _data, int _freq) {
+            data = _data;
+            freq = _freq;
+        }
+
+        public CharNode(CharNode _left, CharNode _right, int _freq) {
+            freq = _freq;
+            left = _left;
+            right = _right;
+        }
+
+        public char getChar() {
+            return data;
+        }
+
+        public int getFreq() {
+            return freq;
+        }
+
+        public void setParent(CharNode _parent) {
+            parent = _parent;
+        }
+
+        public CharNode getParent() {
+            return parent;
+        }
+
+        public void setEncoding(String str) {
+            encoding = str;
+        }
+
+        public String getEncoding() {
+            return encoding;
+        }
+
+        public CharNode getLeft() {
+            return left;
+        }
+
+        public CharNode getRight() {
+            return right;
+        }
+    }
+
+    private static class CharNodeComparator implements Comparator<CharNode> {
+        public int compare(CharNode o1, CharNode o2) {
+            if (o1.getFreq() > o2.getFreq())
+                return 1;
+            else if (o1.getFreq() < o2.getFreq())
+                return -1;
+            else if (o1.getChar() < o2.getChar())
+                return 1;
+            else if (o1.getChar() > o2.getChar())
+                return -1;
+            else
+                return 0;
+        }
+    }
+
 }
