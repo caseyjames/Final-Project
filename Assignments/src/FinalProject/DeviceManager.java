@@ -9,6 +9,7 @@ import java.util.List;
 *
 * @author Paymon saebi
 */
+@SuppressWarnings("UnusedDeclaration")
 public class DeviceManager
 {
 	private Graph network;
@@ -23,7 +24,7 @@ public class DeviceManager
 
 	/**
 	 *
-	 * @param src
+	 * @param src input file
 	 */
 	public void receiveFile(String src)
 	{
@@ -87,7 +88,8 @@ public class DeviceManager
 
 		network.setDirected(true);
 		network.setWeighted(true);
-		out.println("digraph G {");
+        assert out != null;
+        out.println("digraph G {");
 
 		for (int i = 1; i < 4; i++)
 		{
