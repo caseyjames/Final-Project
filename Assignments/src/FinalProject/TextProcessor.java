@@ -210,11 +210,6 @@ public class TextProcessor {
     }
 
     public static void transmitFile(String srcFile, String statsFile) {
-//            * Download the new DeviceManager.java and add it to the package.
-//            * This driver method should pass the user source file to the transmitFile method of the DeviceManager class.
-// First it should check to see if the srcFile is a valid file before passing, if the file is invalid then it should print the following message and return:
-//    <"user srcFile"> is invalid for file transfer!
+
     }
-
-
 }
