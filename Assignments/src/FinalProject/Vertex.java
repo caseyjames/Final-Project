@@ -1,7 +1,6 @@
 package FinalProject;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * Represents vertices for graphs.
@@ -15,7 +14,7 @@ public class Vertex implements Comparable<Vertex> {
     private Vertex cameFrom;
     private boolean isVisited;
     private int costFromStart;
-    private LinkedList<Edge> adj;
+    private MyLinkedList<Edge> adj;
 
     /**
      * Constructs a vertex object with an empty list of edges
@@ -28,7 +27,7 @@ public class Vertex implements Comparable<Vertex> {
         this.cameFrom = null;
         this.isVisited = false;
         this.costFromStart = 0;
-        this.adj = new LinkedList<Edge>();
+        this.adj = new MyLinkedList<Edge>();
     }
 
     /**
@@ -39,7 +38,7 @@ public class Vertex implements Comparable<Vertex> {
      * @param otherVertex - vertex to be connected to this vertex
      */
     public void addEdge(Vertex otherVertex) {
-        this.adj.add(new Edge(otherVertex));
+        this.adj.addLast(new Edge(otherVertex));
         otherVertex.incInDegree();
     }
 
@@ -53,7 +52,7 @@ public class Vertex implements Comparable<Vertex> {
      * @param weight      - the cost associated with this new edge
      */
     public void addEdgeWeighted(Vertex otherVertex, int weight) {
-        this.adj.add(new Edge(otherVertex, weight));
+        this.adj.addLast(new Edge(otherVertex, weight));
         otherVertex.incInDegree();
     }
 
@@ -71,7 +70,7 @@ public class Vertex implements Comparable<Vertex> {
      *
      * @return this vertex's edge list
      */
-    public LinkedList<Edge> getEdges() {
+    public MyLinkedList<Edge> getEdges() {
         return this.adj;
     }
 
@@ -176,20 +175,20 @@ public class Vertex implements Comparable<Vertex> {
 
         return this.name.compareTo(other.getName()) == 0;
     }
-
-    /**
-     * Generates a verbose string with the vertex's name and it's adjacent vertices' names
-     *
-     * @return the string representing this vertex
-     */
-    @Override
-    public String toString() {
-        String s = "Vertex " + name + " adjacent to ";
-
-        for (Edge anAdj : adj) s += anAdj.getOtherVertex().getName() + "  ";
-
-        return s;
-    }
+//
+//    /**
+//     * Generates a verbose string with the vertex's name and it's adjacent vertices' names
+//     *
+//     * @return the string representing this vertex
+//     */
+//    @Override
+//    public String toString() {
+//        String s = "Vertex " + name + " adjacent to ";
+//
+//        for (Edge anAdj : adj) s += anAdj.getOtherVertex().getName() + "  ";
+//
+//        return s;
+//    }
 
     /**
      * The comparable implementation for vertices, for the priority queue used in Dijkstra's algorithm
@@ -211,12 +210,12 @@ public class Vertex implements Comparable<Vertex> {
         else
             return 0;
     }
-
-    public boolean hasEdge(Vertex v) {
-        for (Edge e : adj) {
-            if (e.getOtherVertex().equals(v))
-                return true;
-        }
-        return false;
-    }
+//
+//    public boolean hasEdge(Vertex v) {
+//        for (Edge e : adj) {
+//            if (e.getOtherVertex().equals(v))
+//                return true;
+//        }
+//        return false;
+//    }
 }

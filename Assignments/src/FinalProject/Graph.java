@@ -150,22 +150,22 @@ public class Graph
 		if(!isDirected)
 			vertex2.addEdgeWeighted(vertex1, weight);
 	}
-
-	public Graph copy()
-	{
-		Graph graphCopy = new Graph();
-		graphCopy.setDirected(this.getDirected());
-		graphCopy.setWeighted(this.getWeighted());
-
-		for(Vertex vertex : vertices.values())
-		{
-			for(Edge e : vertices.get(vertex.getName()).getEdges())
-				graphCopy.addEdge(vertex.getName(), e.getOtherVertex().getName());
-		}
-
-		return graphCopy;
-
-	}
+//
+//	public Graph copy()
+//	{
+//		Graph graphCopy = new Graph();
+//		graphCopy.setDirected(this.getDirected());
+//		graphCopy.setWeighted(this.getWeighted());
+//
+//		for(Vertex vertex : vertices.values())
+//		{
+//			for(Object e : vertices.get(vertex.getName()).getEdges())
+//				graphCopy.addEdge(vertex.getName(), e.getOtherVertex().getName());
+//		}
+//
+//		return graphCopy;
+//
+//	}
 
 	/**
 	 * Performs Dijkstra's routine on a weighted graph to determine the cheapest path from start vertex to a goal vertex.

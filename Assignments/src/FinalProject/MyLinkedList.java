@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
  */
 
 @SuppressWarnings("UnusedDeclaration")
-public class MyLinkedList<E> {
+public class MyLinkedList<E> implements Iterable<E> {
     //Instance variables
     int size;
     Node head;
@@ -376,7 +376,12 @@ public class MyLinkedList<E> {
         return arrayToReturn;
     }
 
-    private class LinkedListIterator implements Iterator<Node> {
+    public Iterator<E> iterator() {
+        return new LinkedListIterator();
+    }
+
+
+    public class LinkedListIterator implements Iterator<E> {
         int index = 0;
         boolean gotNext = false;
         Node current;
@@ -406,12 +411,12 @@ public class MyLinkedList<E> {
         /**
          * Returns the next elements and updates the index.
          */
-        public Node next() {
+        public E next() {
             // Checks that there are more elements.
             if (!this.hasNext()) {
                 throw new NoSuchElementException();
             }
-            Node temp = current;
+            E temp = current.data;
             current = current.next;
             return temp;
         }
