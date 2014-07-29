@@ -20,7 +20,7 @@ public class Dictionary {
      * @param tableSize - initial table size
      */
     public Dictionary(File inputFile, int tableSize) {
-        dictionary = new Node[tableSize];
+        dictionary = new Node[nextPrime(tableSize)];
         Scanner inputStats = new Scanner("");
         //try reading file
         try {
@@ -60,13 +60,14 @@ public class Dictionary {
         int alternateCount = 0;
         String maxFreq = "";
         int i, j = 0;
-        PrintWriter writeFile = null;
+
 
         //setup PrintWriter
+        PrintWriter writeFile = null;
         if (fileWrite) {
             try {
                 writeFile = new PrintWriter("" + word + ".txt");
-                writeFile.print("User string: " + word + "\n\n");
+                writeFile.print("User string: " + word+ "\n\n");
             } catch (Exception e) {
                 System.err.println("Unable to write file!");
                 return "";
@@ -239,5 +240,36 @@ public class Dictionary {
         public int getFrequency() {
             return frequency;
         }
+    }
+
+    /**
+     * Returns the first prime integer greater than or equal to the passed integer
+     */
+    public static int nextPrime(int number) {
+        // copy the number so we don't affect the parameter
+        int n = number;
+
+        // make n odd if it's not
+        if (n % 2 == 0)
+            n++;
+
+        // increase n until a prime number is found
+        while (! isPrime(n))
+            n += 2;
+
+        return n;
+    }
+
+    /**
+     * Returns true iff the passed int is prime
+     */
+    public static boolean isPrime(int number) {
+        // test each odd integer smaller than sqrt(number) to see if it's a factor
+        for (int test = 3; test < Math.sqrt(number) + 1; test += 2)
+            if (number % test == 0)
+                return false;
+
+        // if no factor was found the number is prime
+        return true;
     }
 }
