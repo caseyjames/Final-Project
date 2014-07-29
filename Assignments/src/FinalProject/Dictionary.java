@@ -67,9 +67,8 @@ public class Dictionary {
         if (fileWrite) {
             try {
                 writeFile = new PrintWriter("" + word + ".txt");
-                writeFile.print("User string: " + word);
-                writeFile.println();
-                writeFile.println();
+                writeFile.println("User string: " + word);
+
             } catch (Exception e) {
                 System.err.println("Unable to write file!");
                 return "";
@@ -89,10 +88,8 @@ public class Dictionary {
                 maxFreq = newWord;
             alternateCount++;
         }
-        if (fileWrite) {
-            writeFile.println("Created " + i + " deletion alternatives");
-            writeFile.println();
-        }
+        if (fileWrite)
+            writeFile.println("Created " + i + " deletion alternatives\n");
 
         // for loop for transposition alternatives
         for (i = 0; i < word.length() - 1; i++) {
@@ -108,10 +105,9 @@ public class Dictionary {
                 maxFreq = newWord;
             alternateCount++;
         }
-        if (fileWrite) {
-            writeFile.println("Created " + i + " transposition alternatives");
-            writeFile.println();
-        }
+        if (fileWrite)
+            writeFile.println("Created " + i + " transposition alternatives\n");
+        
         // for loop for substitution alternatives
         for (i = 0; i < word.length(); i++) {
             //replace char at specified index with current ascii char and check for validity
@@ -129,10 +125,9 @@ public class Dictionary {
                 alternateCount++;
             }
         }
-        if (fileWrite) {
-            writeFile.println("Created " + (i * (j - 1)) + " substitution alternatives");
-            writeFile.println();
-        }
+        if (fileWrite)
+            writeFile.println("Created " + (i * (j-1)) + " substitution alternatives\n");
+
         // for loops for insertion alternatives
         for (i = 0; i <= word.length(); i++) {
             //insert ascii character at specified index and check for validity
@@ -149,8 +144,7 @@ public class Dictionary {
         }
         //finish file and close writer
         if (fileWrite) {
-            writeFile.println("Created " + (i * j) + " insertion alternatives");
-            writeFile.println();
+            writeFile.println("Created " + (i * j) + " insertion alternatives\n");
             writeFile.println("TOTAL: generated " + alternateCount + " alternative spellings!");
             writeFile.close();
         }
