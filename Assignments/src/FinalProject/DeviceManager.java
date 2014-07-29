@@ -3,7 +3,7 @@ package FinalProject;//package FinalProject;
 
 import java.io.PrintWriter;
 import java.util.Random;
-import java.util.List;
+//import java.util.List;
 
 /**
 *
@@ -43,7 +43,7 @@ public class DeviceManager
 		initializeNetwork();
 		int delay = 0, time = 0;
 
-		List<String> path = network.dijkstrasShortestPath("control", "device");
+		MyLinkedList<String> path = network.dijkstrasShortestPath("control", "device");
 		System.out.println("\nStablishing a connection, please wait ...");
 
 		for (int i = 0; i < path.size() - 1; i++)
