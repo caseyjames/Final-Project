@@ -38,7 +38,7 @@ public class TextProcessor {
             if (input.equals("1")) {
                 System.out.println("Please enter a text word: ");
                 input = scanner.next();
-                if( scanner.hasNext()){
+                if (scanner.hasNext()) {
                     input2 = scanner.next();
                 }
                 if (input2 != null && input2.equals("-f"))
@@ -66,19 +66,19 @@ public class TextProcessor {
 
             } else if (input.equals("4")) {
                 System.out.println("Please enter the source file path: ");
-                input = scanner.nextLine();
+                input = scanner.next();
                 File inputFile = new File(input);
                 if (!inputFile.isFile()) {
-                    System.out.println(input + "is invalid for spell correction!\n");
+                    System.out.println(input + "is invalid for decompression!\n");
                     continue;
                 }
                 System.out.println("Please enter the destination file path: ");
-                input2 = scanner.nextLine();
+                input2 = scanner.next();
                 decompressFile(input, input2);
 
             } else if (input.equals("5")) {
                 System.out.println("Please enter the source file path: ");
-                input = scanner.nextLine();
+                input = scanner.next();
                 transmitFile(input, args0[0]);
 
             } else {
@@ -174,8 +174,7 @@ public class TextProcessor {
         if (message == 0) {
             System.out.println(srcFile + " contains words with correct spelling!\n\n");
 //            inputF.delete();
-        }
-        else if (message == 1)
+        } else if (message == 1)
             System.out.println(srcFile + " was corrected successfully!\n\n");
         else
             System.out.println(srcFile + " was corrected, but it contains unknown words!\n\n");
@@ -185,7 +184,7 @@ public class TextProcessor {
         // declare & instantiate input file source
         File inputFile = new File(srcFile);
         if (!inputFile.isFile()) {
-            System.out.println(srcFile + "is invalid for spell correction!\n");
+            System.out.println(srcFile + "is invalid for compression!\n");
             return;
         }
         // attempt to open the file with FileReader then use BufferedReader
@@ -211,10 +210,10 @@ public class TextProcessor {
             e.printStackTrace();
         }
 
-        // priority queue to make binary tri
+        // priority queue to make binary trie
         PriorityQueueHEAP<CharNode> pq = new PriorityQueueHEAP<CharNode>(new CharNodeComparator());
         CharNode currentChar;
-        // array to hold CharNode's that represent data for each character in the input file.
+        // array to hold CharNodes that represent data for each character in the input file.
         CharNode[] charArray = new CharNode[256];
         // loading the priority queue
         for (int i = 0; i < 256; i++) {
@@ -227,7 +226,7 @@ public class TextProcessor {
         // add EOF char
         pq.add(new CharNode((char) -1, 1));
 
-        // building the binary tri
+        // building the binary trie
         CharNode left;
         CharNode right;
         CharNode parent;
@@ -250,7 +249,7 @@ public class TextProcessor {
             return;
         }
 
-        // determine each characters encoding & set the value in it's corresponding CharNode
+        // determine each characters encoding & set the value in its corresponding CharNode
         String encoding;
         for (int i = 0; i < 256; i++) {
             encoding = "";
@@ -281,11 +280,9 @@ public class TextProcessor {
         }
         reader = new BufferedReader(inputStream);
 
-
-
         // start reading file again to encode it from beginning
         String bitString = "";
-        int addZeros = 0;
+        int addZeros;
         try {
             while ((nextByte = reader.read()) != -1) {
                 bitString += charArray[nextByte].getEncoding();
@@ -295,7 +292,7 @@ public class TextProcessor {
         }
 
         // add remaining bits to make file of complete bytes
-        addZeros = 8 - bitString.length()%8;
+        addZeros = 8 - bitString.length() % 8;
         while (addZeros > 0) {
             bitString = bitString + "0";
             addZeros--;
@@ -307,11 +304,10 @@ public class TextProcessor {
         while (bitIndex < bitString.length()) {
             toPrint = 0;
             for (int i = 0; i < 8; i++) {
-                if (bitString.charAt(bitIndex) == '1'){
+                if (bitString.charAt(bitIndex) == '1') {
                     toPrint = (byte) (toPrint >>> 1);
                     toPrint += (byte) 128;
-                }
-                else
+                } else
                     toPrint = (byte) (toPrint >>> 1);
                 bitIndex++;
             }
@@ -324,29 +320,119 @@ public class TextProcessor {
         // re initialize outputFile to check that it is valid after printed to and closed.
         outputFile = new File(dstFile);
 
-        if (! outputFile.isFile())
+        if (!outputFile.isFile())
+            System.out.println(dstFile + " compression was unsuccessful!");
+        else
+            System.out.println(dstFile + " compression was successful!");
+    }
+
+    public static void decompressFile(String srcFile, String dstFile) {
+
+        // declare & instantiate input file source
+        File inputFile = new File(srcFile);
+        if (!inputFile.isFile()) {
+            System.out.println(srcFile + "is invalid for decompression!\n");
+            return;
+        }
+        // attempt to open the file with FileReader then use BufferedReader
+        FileReader inputStream;
+        try {
+            inputStream = new FileReader(inputFile);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+        BufferedReader reader = new BufferedReader(inputStream);
+
+        int nextByte;
+        int freq;
+        PriorityQueueHEAP<CharNode> pq = new PriorityQueueHEAP<CharNode>(new CharNodeComparator());
+        // try block increments frequency for charNumbers index equal to char code
+        try {
+            while (true) {
+                nextByte = reader.read();
+
+                //TODO read frequency
+                freq = 0;
+                if (nextByte == 0 && freq == 0)
+                    break;
+                pq.add(new CharNode((char) nextByte, freq));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // building the binary trie
+        CharNode left;
+        CharNode right;
+        CharNode parent;
+        while (pq.size() > 1) {
+            left = pq.deleteMin();
+            right = pq.deleteMin();
+            parent = new CharNode(left, right, (left.getFreq() + right.getFreq()));
+            left.setParent(parent);
+            right.setParent(parent);
+            pq.add(parent);
+        }
+
+        // use file and PrintWriter to open file to print compressed file to.
+        File outputFile = new File(dstFile);
+        PrintWriter outFile;
+        try {
+            outFile = new PrintWriter(outputFile);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
+
+        // start reading file again to encode it from beginning
+        String bitString = "";
+        int addZeros;
+        CharNode root = pq.deleteMin();
+        CharNode currentNode = root;
+        try {
+            while ((nextByte = reader.read()) != -1) {
+                for (int i = 0; i < 8; i++) {
+                    if ((nextByte & (1 << i)) == 1) {
+                        if (currentNode.getLeft() != null)
+                            currentNode = currentNode.getLeft();
+                        else {
+                            outFile.print(currentNode.getParent().getChar());
+                            currentNode = root;
+                        }
+                    } else {
+                        if (currentNode.getRight() != null)
+                            currentNode = currentNode.getRight();
+                        else {
+                            outFile.print(currentNode.getParent().getChar());
+                            currentNode = root;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // add remaining bits to make file of complete bytes
+        addZeros = 8 - bitString.length() % 8;
+        while (addZeros > 0) {
+            bitString = bitString + "0";
+            addZeros--;
+        }
+
+        // close file when all bytes are printed to file.
+        outFile.close();
+
+        // re initialize outputFile to check that it is valid after printed to and closed.
+        outputFile = new File(dstFile);
+
+        if (!outputFile.isFile())
             System.out.println(dstFile + " compression was unsuccessful!");
         else
             System.out.println(dstFile + " compression was successful!");
 
-//            * This driver method should pass the user source and destination file to the file compression part of your program. The method should first check to see if the srcFile is a valid file before passing it to your compressor, if the file is invalid then it should print the following message and return:
-//    <"user srcFile"> is invalid for compression!
-//            * If the file is valid then it should pass the file to your compression program to be compressed in a new file dstFile given by the user.
-//            * After the call for compression returns, this method should check to see if the now compressed dstFile is a valid file, if it is then you should print:
-//    <"user srcFile"> was compressed successfully!
-//            * If the dstFile is actually invalid, meaning that it was not generated by your program or similar problems then you should print:
-//    <"user srcFile"> compression was unsuccessful!
-    }
-
-    public static void decompressFile(String srcFile, String dstFile) {
-//            * This driver method should pass the user source and destination file to the file compression part of your program.
-// The method should first check to see if the srcFile is a valid file before passing it to your compressor, if the file is invalid then it should print the following message and return:
-//    <"user srcFile"> is invalid for compression!
-//            * If the file is valid then it should pass the file to your compression program to be compressed in a new file dstFile given by the user.
-//            * After the call for compression, this method should check to see if the now compressed dstFile is a valid file, if it is then you should print:
-//    <"user srcFile"> was compressed successfully!
-//            * If the dstFile is actually invalid, meaning that it was not generated by your program or similar problems then you should print:
-//    <"user srcFile"> compression was unsuccessful!
     }
 
     public static void transmitFile(String srcFile, String statsFile) {
