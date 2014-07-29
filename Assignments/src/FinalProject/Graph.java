@@ -1,7 +1,5 @@
 package FinalProject;
 
-import sun.security.provider.certpath.Vertex;
-
 import java.util.*;
 
 /**
@@ -160,9 +158,8 @@ public class Graph {
      * Uses Java's PriorityQueue class to find the "unvisited vertex with smallest distance from start".
      * See the API for PriorityQueue, and ask the course staff if you need help.
      *
-     * @param graph - The graph object to be traversed
-     * @param start - Name of the starting vertex in the path
-     * @param goal  - Name of the ending vertex in the path
+     * @param startName - Name of the starting vertex in the path
+     * @param goalName  - Name of the ending vertex in the path
      * @return a list of the vertices that make up the cheapest path from the starting vertex (inclusive) to the
      * ending vertex (inclusive) based on weight associated with the edges between the graphs vertices
      * @throws UnsupportedOperationException if the graph is not weighted, or there are no vertices in the graph
@@ -200,7 +197,7 @@ public class Graph {
         PriorityQueueHEAP<Vertex> queue = new PriorityQueueHEAP<Vertex>();
         queue.add(map.get(startName));
         // Go through entire queue
-        while (!queue.isEmpty()) {
+        while (queue.size()!= 0) {
             Vertex temp = queue.deleteMin();
 
             // Exit loop if we find our goal
