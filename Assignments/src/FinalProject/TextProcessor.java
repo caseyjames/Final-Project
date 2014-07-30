@@ -26,7 +26,8 @@ public class TextProcessor {
 
         Scanner scanner = new Scanner(new InputStreamReader(System.in));
         Scanner lineParse;
-        String input, input2;
+        String input, input1, input2;
+        String[] ins;
 
         while (true) {
             System.out.println("Please choose from the following options:");
@@ -37,18 +38,16 @@ public class TextProcessor {
             System.out.println("5) File remote transfer\n");
             input = scanner.next();
             input2 = null;
+            input1 = null;
 
             if (input.equals("1")) {
                 System.out.println("Please enter a text word: ");
                 input = scanner.next();
-                if (scanner.hasNext()) {
-                    input2 = scanner.next();
-                }
-                if (input2 != null && input2.equals("-f"))
+                input2 = scanner.nextLine();
+                if (input2.equals(" -f"))
                     spellcheckWord(input, true);
                 else
                     spellcheckWord(input, false);
-
             } else if (input.equals("2")) {
                 System.out.println("Please enter the source file path: ");
                 input = scanner.next();
@@ -210,6 +209,5 @@ public class TextProcessor {
     }
 
     public static void transmitFile(String srcFile, String statsFile) {
-
     }
 }

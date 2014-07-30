@@ -57,7 +57,7 @@ public class Compressor {
         PriorityQueueHEAP<CharNode> pq = new PriorityQueueHEAP<CharNode>(new CharNodeComparator());
         CharNode currentChar;
         // array to hold CharNodes that represent data for each character in the input file.
-        CharNode[] charArray = new CharNode[256];
+        CharNode[] charArray = new CharNode[257];
         // loading the priority queue
         for (int i = 0; i < 256; i++) {
             if (charNumbers[i] != 0) {
@@ -67,8 +67,8 @@ public class Compressor {
             }
         }
         // add EOF char
-        charArray[0] = new CharNode((char) -1, 1);
-        pq.add(charArray[0]);
+        charArray[256] = new CharNode((char) -1, 1);
+        pq.add(charArray[256]);
 
         // building the binary trie
         CharNode left;
@@ -85,7 +85,7 @@ public class Compressor {
 
         // determine each characters encoding & set the value in its corresponding CharNode
         String encoding;
-        for (int i = 0; i < 256; i++) {
+        for (int i = 0; i < 257; i++) {
             if (charArray[i] != null) {
                 currentChar = charArray[i];
                 // this portion prints the file header
@@ -136,7 +136,7 @@ public class Compressor {
             e.printStackTrace();
         }
         // add end of file character
-        bitString += charArray[0].getEncoding();
+        bitString += charArray[256].getEncoding();
 
         // add remaining bits to make file of complete bytes
         addZeros = 8 - (bitString.length() % 8);
@@ -230,9 +230,9 @@ public class Compressor {
             else if (o1.getFreq() < o2.getFreq())
                 return -1;
             else if (o1.getChar() < o2.getChar())
-                return 1;
-            else if (o1.getChar() > o2.getChar())
                 return -1;
+            else if (o1.getChar() > o2.getChar())
+                return 1;
             else
                 return 0;
         }

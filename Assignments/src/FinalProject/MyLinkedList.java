@@ -420,5 +420,13 @@ public class MyLinkedList<E> implements Iterable<E> {
             current = current.next;
             return temp;
         }
+
+
+        @Override
+        public void remove() {
+
+        }
+
+
     }
 }

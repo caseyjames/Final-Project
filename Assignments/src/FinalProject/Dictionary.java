@@ -68,9 +68,10 @@ public class Dictionary {
             try {
                 writeFile = new PrintWriter("" + word + ".txt");
                 writeFile.println("User string: " + word);
-
+                writeFile.println();
             } catch (Exception e) {
                 System.err.println("Unable to write file!");
+                writeFile.println();
                 return "";
             }
         }
@@ -88,8 +89,10 @@ public class Dictionary {
                 maxFreq = newWord;
             alternateCount++;
         }
-        if (fileWrite)
-            writeFile.println("Created " + i + " deletion alternatives\n");
+        if (fileWrite) {
+            writeFile.println("Created " + i + " deletion alternatives");
+            writeFile.println();
+        }
 
         // for loop for transposition alternatives
         for (i = 0; i < word.length() - 1; i++) {
@@ -105,9 +108,11 @@ public class Dictionary {
                 maxFreq = newWord;
             alternateCount++;
         }
-        if (fileWrite)
-            writeFile.println("Created " + i + " transposition alternatives\n");
-        
+        if (fileWrite){
+            writeFile.println("Created " + i + " transposition alternatives");
+            writeFile.println();
+        }
+
         // for loop for substitution alternatives
         for (i = 0; i < word.length(); i++) {
             //replace char at specified index with current ascii char and check for validity
@@ -125,8 +130,10 @@ public class Dictionary {
                 alternateCount++;
             }
         }
-        if (fileWrite)
-            writeFile.println("Created " + (i * (j-1)) + " substitution alternatives\n");
+        if (fileWrite){
+            writeFile.println("Created " + (i * (j-1)) + " substitution alternatives");
+            writeFile.println();
+        }
 
         // for loops for insertion alternatives
         for (i = 0; i <= word.length(); i++) {
@@ -144,7 +151,8 @@ public class Dictionary {
         }
         //finish file and close writer
         if (fileWrite) {
-            writeFile.println("Created " + (i * j) + " insertion alternatives\n");
+            writeFile.println("Created " + (i * j) + " insertion alternatives");
+            writeFile.println();
             writeFile.println("TOTAL: generated " + alternateCount + " alternative spellings!");
             writeFile.close();
         }
