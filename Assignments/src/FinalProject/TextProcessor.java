@@ -37,8 +37,6 @@ public class TextProcessor {
             System.out.println("4) File decompression");
             System.out.println("5) File remote transfer\n");
             input = scanner.next();
-            input2 = null;
-            input1 = null;
 
             if (input.equals("1")) {
                 System.out.println("Please enter a text word: ");
@@ -209,5 +207,11 @@ public class TextProcessor {
     }
 
     public static void transmitFile(String srcFile, String statsFile) {
+
+        DeviceManager dev = new DeviceManager();
+
+        dev.initializeNetwork();
+        dev.transmitFile(srcFile);
+        dev.receiveFile(srcFile);
     }
 }
