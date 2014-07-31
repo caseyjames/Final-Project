@@ -43,8 +43,6 @@ public class Decompressor {
             e.printStackTrace();
             return;
         }
-        // add EOF char
-        pq.add(new CharNode((char) -1, 1));
 
         // building the binary trie
         CharNode left;
@@ -102,7 +100,7 @@ public class Decompressor {
                 currentNode = currentNode.getRight();
 
             if (currentNode.getLeft() == null) {
-                if (currentNode.getChar() != (char) -1) {
+                if (currentNode.getChar() != (char) 0) {
                     outFile.print(currentNode.getChar());
                     currentNode = new CharNode(root);
                 } else

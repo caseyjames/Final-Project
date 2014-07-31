@@ -67,7 +67,7 @@ public class Compressor {
             }
         }
         // add EOF char
-        charArray[256] = new CharNode((char) -1, 1);
+        charArray[256] = new CharNode((char) 0, 1);
         pq.add(charArray[256]);
 
         // building the binary trie
@@ -89,13 +89,11 @@ public class Compressor {
             if (charArray[i] != null) {
                 currentChar = charArray[i];
                 // this portion prints the file header
-                if (currentChar.getChar() != (char) -1) {
-                    try {
-                        outFile.writeByte(currentChar.getChar());
-                        outFile.writeInt(currentChar.getFreq());
-                    } catch (IOException e) {
-                        System.out.println(e.getMessage());
-                    }
+                try {
+                    outFile.writeByte(currentChar.getChar());
+                    outFile.writeInt(currentChar.getFreq());
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
                 }
                 encoding = "";
                 while (currentChar.getParent() != null) {
