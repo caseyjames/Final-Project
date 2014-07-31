@@ -190,8 +190,12 @@ public class TextProcessor {
             System.out.println(srcFile + " is invalid for compression!");
             return;
         }
-        // create new compressor class with inFile & outFile, then invoke compress()
-        compressor.compress(inFile, outFile);
+        // create new compressor class with inFile & outFile, then invoke compress(), throws IO exception
+        try {
+            compressor.compress(inFile, outFile);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void decompressFile(String srcFile, String dstFile) {
@@ -202,8 +206,12 @@ public class TextProcessor {
             System.out.println(srcFile + " is invalid for decompression!");
             return;
         }
-        // create new compressor class with inFile & outFile, then invoke compress()
-        decompressor.decompress(inFile, outFile);
+        // create new compressor class with inFile & outFile, then invoke compress(), throws IO exception
+        try {
+            decompressor.decompress(inFile, outFile);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public static void transmitFile(String srcFile, String statsFile) {

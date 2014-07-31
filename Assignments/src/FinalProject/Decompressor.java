@@ -10,38 +10,29 @@ public class Decompressor {
     private File srcFile;
     private File dstFile;
 
-    public void decompress(File _srcFile, File _dstFile) {
+    public void decompress(File _srcFile, File _dstFile) throws IOException{
         srcFile = _srcFile;
         dstFile = _dstFile;
 
 
         // attempt to open the file with FileInputStream then use DataInputStream
         FileInputStream inputStream;
-        DataInputStream inFile ;
-        try {
-            inputStream = new FileInputStream(srcFile);
-            inFile = new DataInputStream(inputStream);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        DataInputStream inFile;
+        inputStream = new FileInputStream(srcFile);
+        inFile = new DataInputStream(inputStream);
 
+        // read header portion of compressed file and add to pq
         byte nextByte;
         int freq;
-        int byteCount = 0;
+        int byteCount = 0; // used to know array size for non-header portion of file
         PriorityQueueHEAP<CharNode> pq = new PriorityQueueHEAP<CharNode>(new CharNodeComparator());
-        try {
-            while (true) {
-                nextByte = inFile.readByte();
-                freq = inFile.readInt();
-                byteCount += 5;
-                if (freq == 0)
-                    break;
-                pq.add(new CharNode((char) nextByte, freq));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
+        while (true) {
+            nextByte = inFile.readByte();
+            freq = inFile.readInt();
+            byteCount += 5;
+            if (freq == 0)
+                break;
+            pq.add(new CharNode((char) nextByte, freq));
         }
 
         // building the binary trie
@@ -60,39 +51,29 @@ public class Decompressor {
         CharNode root = pq.deleteMin();
 
         // use file and PrintWriter to open file to print decompressed file to.
-        PrintWriter outFile;
-        try {
-            outFile = new PrintWriter(dstFile);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        PrintWriter outFile = new PrintWriter(dstFile);
 
         // start reading file again to encode it from beginning
         String byteStr;
         String encoding = "";
-        byte[] allBytes = new byte[((int)(srcFile.length()) - byteCount)];
+        byte[] allBytes = new byte[((int) (srcFile.length()) - byteCount)];
         // first build string 'encoding' of all the rest of the bits in the file
-        try {
-            inFile.read(allBytes);
-            double bit;
-            for (int i = 0; i < allBytes.length; i++) {
-                byteStr = "";
-                for (int j = 0; j < 8; j++) {
-                    bit = (Math.abs((double) (allBytes[i] >>> j)))%2.0;
-                    if(bit > 0)
-                        byteStr = "1" + byteStr;
-                    else
-                        byteStr = "0" + byteStr;
-                }
-                encoding += byteStr;
+        inFile.read(allBytes);
+        int bit;
+        for (int i = 0; i < allBytes.length; i++) {
+            byteStr = "";
+            for (int j = 0; j < 8; j++) {
+                bit = Math.abs((allBytes[i] >>> j) % 2);
+                if (bit > 0)
+                    byteStr = "1" + byteStr;
+                else
+                    byteStr = "0" + byteStr;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            encoding += byteStr;
         }
 
-        CharNode currentNode = new CharNode(root);
         // use encode string to begin decoding and printing decoded characters to outFile.
+        CharNode currentNode = new CharNode(root);
         for (int i = 0; i < encoding.length(); i++) {
             if (encoding.charAt(i) == '0')
                 currentNode = currentNode.getLeft();
@@ -100,7 +81,7 @@ public class Decompressor {
                 currentNode = currentNode.getRight();
 
             if (currentNode.getLeft() == null) {
-                if (currentNode.getChar() != (char) 0) {
+                if (currentNode.getChar() != '\0') {
                     outFile.print(currentNode.getChar());
                     currentNode = new CharNode(root);
                 } else
@@ -109,15 +90,11 @@ public class Decompressor {
         }
 
         // close files when all bytes are printed to file.
-        try {
-            outFile.close();
-            inFile.close();
-            inputStream.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        outFile.close();
+        inFile.close();
+        inputStream.close();
 
-
+        // check that the written file is still valid and print corresponding message.
         if (!dstFile.isFile())
             System.out.println(dstFile + " decompression was unsuccessful!\n");
         else

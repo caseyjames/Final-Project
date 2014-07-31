@@ -10,28 +10,18 @@ public class Compressor {
     private File srcFile;
     private File dstFile;
 
-    public void compress(File _srcFile, File _dstFile) {
+    public void compress(File _srcFile, File _dstFile) throws IOException {
         // assign values to srcFile and dstFile
         srcFile = _srcFile;
         dstFile = _dstFile;
         // output stream to open file to print compressed file to.
         FileOutputStream oFile;
-        try {
-            oFile = new FileOutputStream(dstFile);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        oFile = new FileOutputStream(dstFile);
         DataOutputStream outFile = new DataOutputStream(oFile);
 
         // attempt to open the file with FileReader then use BufferedReader
         FileReader fileIn;
-        try {
-            fileIn = new FileReader(srcFile);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        fileIn = new FileReader(srcFile);
         BufferedReader reader = new BufferedReader(fileIn);
 
         // array to count char frequencies in file, charNumbers index is the char code
@@ -39,25 +29,18 @@ public class Compressor {
         int nextByte = 0;
 
         // try block increments frequency for charNumbers index equal to char code
-        try {
-            while ((nextByte = reader.read()) != -1) {
-                charNumbers[nextByte]++;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        while ((nextByte = reader.read()) != -1)
+            charNumbers[nextByte]++;
+
         // close the input file
-        try {
-            reader.close();
-            fileIn.close();
-        } catch (IOException e) {
-        }
+        reader.close();
+        fileIn.close();
 
         // priority queue to make binary trie
         PriorityQueueHEAP<CharNode> pq = new PriorityQueueHEAP<CharNode>(new CharNodeComparator());
         CharNode currentChar;
         // array to hold CharNodes that represent data for each character in the input file.
-        CharNode[] charArray = new CharNode[257];
+        CharNode[] charArray = new CharNode[256];
         // loading the priority queue
         for (int i = 0; i < 256; i++) {
             if (charNumbers[i] != 0) {
@@ -67,8 +50,8 @@ public class Compressor {
             }
         }
         // add EOF char
-        charArray[256] = new CharNode((char) 0, 1);
-        pq.add(charArray[256]);
+        charArray[0] = new CharNode('\0', 1);
+        pq.add(charArray[0]);
 
         // building the binary trie
         CharNode left;
@@ -85,16 +68,13 @@ public class Compressor {
 
         // determine each characters encoding & set the value in its corresponding CharNode
         String encoding;
-        for (int i = 0; i < 257; i++) {
+        for (int i = 0; i < 256; i++) {
             if (charArray[i] != null) {
                 currentChar = charArray[i];
                 // this portion prints the file header
-                try {
-                    outFile.writeByte(currentChar.getChar());
-                    outFile.writeInt(currentChar.getFreq());
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                }
+                outFile.writeByte(currentChar.getChar());
+                outFile.writeInt(currentChar.getFreq());
+                // determine and set char encodings
                 encoding = "";
                 while (currentChar.getParent() != null) {
                     if (currentChar.getParent().getLeft() == currentChar)
@@ -106,63 +86,37 @@ public class Compressor {
                 charArray[i].setEncoding(encoding);
             }
         }
+
         // print end of header characters
-        try {
-            outFile.writeByte(0);
-            outFile.writeInt(0);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        outFile.writeByte(0);
+        outFile.writeInt(0);
 
         // attempt to re-open the file with FileReader then use BufferedReader
-        try {
-            fileIn = new FileReader(srcFile);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return;
-        }
+        fileIn = new FileReader(srcFile);
         reader = new BufferedReader(fileIn);
 
         // start reading file again to encode it from beginning
-        String bitString = "";
-        int addZeros;
-        try {
-            while ((nextByte = reader.read()) != -1) {
-                bitString += charArray[nextByte].getEncoding();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        encoding = "";
+        while ((nextByte = reader.read()) != -1)
+            encoding += charArray[nextByte].getEncoding();
         // add end of file character
-        bitString += charArray[256].getEncoding();
+        encoding += charArray[0].getEncoding();
 
         // add remaining bits to make file of complete bytes
-        addZeros = 8 - (bitString.length() % 8);
-        while (addZeros > 0) {
-            bitString = bitString + "0";
-            addZeros--;
-        }
+        for (int i = 0; i < (8 - (encoding.length() % 8)); i++)
+            encoding = encoding + "0";
 
-        int bitIndex = 0;
         byte toPrint;
         // traverse each 8 characters in bitString and print byte to file
-        while (bitIndex < bitString.length()) {
-            toPrint = (byte) Integer.parseInt((bitString.substring(bitIndex,bitIndex+8)),2);
-            try {
-                outFile.writeByte(toPrint);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-            bitIndex += 8;
+        for (int i = 0; i < encoding.length()-8; i += 8) {
+            toPrint = (byte) Integer.parseInt(encoding.substring(i, i + 8), 2);
+            outFile.writeByte(toPrint);
         }
 
         // close file when all bytes are printed to file.
-        try {
-            outFile.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        outFile.close();
 
+        // check that outfile is still a valid file then print corresponding message
         if (!dstFile.isFile())
             System.out.println(dstFile + " compression was unsuccessful!\n");
         else
