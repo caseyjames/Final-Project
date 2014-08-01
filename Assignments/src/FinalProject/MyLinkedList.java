@@ -382,7 +382,7 @@ public class MyLinkedList<E> implements Iterable<E> {
 
 
     public class LinkedListIterator implements Iterator<E> {
-        int index = 0;
+        int index;
         boolean gotNext = false;
         Node current;
 

@@ -1,7 +1,8 @@
 package FinalProject;
 
 /**
- * Created by Tom on 7/21/2014.
+ * @author Casey Nordgran
+ * @author Tom Pridham
  */
 public class TextProcessorTester {
 }

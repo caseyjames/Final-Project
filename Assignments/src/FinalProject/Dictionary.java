@@ -6,8 +6,10 @@ import java.util.Scanner;
 
 /**
  *
+ * @author Tom Pridham
+ * @author Casey Nordgran
  *
- *
+ * Class that represents a dictionary used in spell checking
  *
  */
 @SuppressWarnings("ConstantConditions")

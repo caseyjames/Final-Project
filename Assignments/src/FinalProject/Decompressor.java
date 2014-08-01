@@ -100,11 +100,11 @@ public class Decompressor {
         inFile.close();
         inputStream.close();
 
-        // check that the written file is still valid and print corresponding message.
-        if (!dstFile.isFile())
-            System.out.println(dstFile + " decompression was unsuccessful!\n");
-        else
-            System.out.println(dstFile + " decompression was successful!\n");
+//        // check that the written file is still valid and print corresponding message.
+//        if (!dstFile.isFile())
+//            System.out.println(dstFile + " decompression was unsuccessful!\n");
+//        else
+//            System.out.println(dstFile + " decompression was successful!\n");
 
     }
 
