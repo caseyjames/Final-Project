@@ -4,16 +4,22 @@ import java.io.*;
 import java.util.Comparator;
 
 /**
- * Created by Casey on 7/28/2014.
+ * @author Casey Nordgran
+ * @author Tom Pridham
+ *
+ * Decompresses files compressed using the Huffman Algorithm
  */
 public class Decompressor {
-    private File srcFile;
-    private File dstFile;
 
-    public void decompress(File _srcFile, File _dstFile) throws IOException{
-        srcFile = _srcFile;
-        dstFile = _dstFile;
-
+    /**
+     *
+     * @param _srcFile
+     * @param _dstFile
+     * @throws IOException
+     */
+    public void decompress(File _srcFile, File _dstFile) throws IOException {
+        File srcFile = _srcFile;
+        File dstFile = _dstFile;
 
         // attempt to open the file with FileInputStream then use DataInputStream
         FileInputStream inputStream;
