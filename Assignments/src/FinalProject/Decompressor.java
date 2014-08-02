@@ -14,7 +14,7 @@ import java.util.Comparator;
 public class Decompressor {
 
     /**
-     *
+     * Decompresses a compressed file that was compressed using huffmans algorithm.
      * @param _srcFile - compressed file to be decompressed
      * @param _dstFile - file to write
      * @throws IOException

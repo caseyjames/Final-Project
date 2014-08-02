@@ -32,8 +32,10 @@ public class TextProcessor {
      * @param args0 - dictionary file with word frequencies
      */
     public static void main(String[] args0) {
+        // first one for testing only
+        initializeComponents("wordstats1.txt");
 
-        initializeComponents(args0[0]);
+//        initializeComponents(args0[0]);
         if (dictionary == null)
             return;
 

@@ -5,16 +5,26 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
- *
  * @author Tom Pridham
  * @author Casey Nordgran
  *
- * Class that represents a dictionary used in spell checking
+ * Class that represents a dictionary used in spell checking. This class holds the words in a
+ * structure similar to a hash table that uses seperate chaining. The difference is that it is
+ * more like a hash map in that the word name is used as the key to hash values, and the item
+ * stored is this classes CharNode class objects. Instead of using linked lists, the Node[]
+ * array stores the data. There is no need to keep track of a head node because the nodes at
+ * each index in Node[] are the head nodes, and each node keeps only 1 reference to next as
+ * this is all that is needed.
  *
  */
 @SuppressWarnings("ConstantConditions")
 public class Dictionary {
-    private Node[] dictionary;
+//    private Node[] dictionary;
+
+    // variables used for testing only
+    public Node[] dictionary;
+    public int size;
+    public int capacity;
 
     /**
      * Constructor for Dictionary to hold all correctly spelled words and their frequencies.
@@ -22,7 +32,11 @@ public class Dictionary {
      * @param tableSize - initial table size
      */
     public Dictionary(File inputFile, int tableSize) {
-        dictionary = new Node[nextPrime(tableSize)];
+        // the next 3 assigns are for testing only, use dictionary = new Node[nextPrime(tableSize)];
+        size = 0;
+        capacity = nextPrime(tableSize);
+        dictionary = new Node[capacity];
+//        dictionary = new Node[nextPrime(tableSize)];
         Scanner inputStats = new Scanner("");
         //try reading file
         try {
@@ -171,7 +185,7 @@ public class Dictionary {
         if(contains(newName))
             return;
         //hash new word into chaining hash table
-        int listIndex = Math.abs(newName.hashCode() % dictionary.length);
+        int listIndex = stringHasher(newName) % dictionary.length;
         if (dictionary[listIndex] == null)
             dictionary[listIndex] = new Node(newName, newFreq);
         else {
@@ -180,6 +194,7 @@ public class Dictionary {
                 current = current.next;
             current.next = new Node(newName, newFreq);
         }
+        size++;
     }
 
     /**
@@ -282,5 +297,27 @@ public class Dictionary {
 
         // if no factor was found the number is prime
         return true;
+    }
+
+    /**
+     * creates a hash integer given a specified string. This method tries to make a unique
+     * integer for each different string to be hashed to a hash table. It is similar to the
+     * string hasher used in the text book except with some changes. We chose a different prime number to use, and
+     * also this method does not take into consideration the table size as the one in the book does.
+     * Another change is that we add the char value first, then on the next line multiply this new number
+     * by the prime number of 43. We also assert the returned number is positive.
+     *
+     * The text book is Data Structures & Problem Solving using Java, by Mark Allen Weiss, 4th Edition.
+     * @param str string used to determine a hash number.
+     */
+    public static int stringHasher(String str) {
+        int returnNum = 0;
+
+        for (int i = 0; i < str.length(); i++) {
+            returnNum += str.charAt(i);
+            returnNum *= 43;
+        }
+
+        return Math.abs(returnNum);
     }
 }
