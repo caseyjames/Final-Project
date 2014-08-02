@@ -126,14 +126,14 @@ public class TextProcessor {
 
     public static void spellcheckWord(String word, boolean fileWrite) {
         String returnedWord = dictionary.spellCheck(word, fileWrite);
-//        if (returnedWord != null) {
-//            if (returnedWord.equals(word))
-//                System.out.println("" + word + " is a known word!\n");
-//            else if (returnedWord.equals(""))
-//                System.out.println("" + word + " is an unknown word!\n");
-//            else
-//                System.out.println("" + word + " is an unknown word! " + returnedWord + " is a known word!\n");
-//        }
+        if (returnedWord != null) {
+            if (returnedWord.equals(word))
+                System.out.println("" + word + " is a known word!\n");
+            else if (returnedWord.equals(""))
+                System.out.println("" + word + " is an unknown word!\n");
+            else
+                System.out.println("" + word + " is an unknown word! " + returnedWord + " is a known word!\n");
+        }
     }
 
     /**
@@ -250,6 +250,7 @@ public class TextProcessor {
      * @param srcFile - file to transfer, <infile>.ext
      * @param statsFile - unused
      */
+    @SuppressWarnings("UnusedParameters")
     public static void transmitFile(String srcFile, String statsFile) {
 
         dev.initializeNetwork();

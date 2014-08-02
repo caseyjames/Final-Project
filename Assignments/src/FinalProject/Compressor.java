@@ -4,16 +4,16 @@ import java.io.*;
 import java.util.Comparator;
 
 /**
- * Created by Casey on 7/28/2014.
+ * @author Casey Nordgran
+ * @author Tom Pridham
+ *
+ * Compressor class used in the TextProcessor class.
+ * Contains all the necessary methods for compression of text files.
  */
 public class Compressor {
-    private File srcFile;
-    private File dstFile;
 
-    public void compress(File _srcFile, File _dstFile) throws IOException {
-        // assign values to srcFile and dstFile
-        srcFile = _srcFile;
-        dstFile = _dstFile;
+    public void compress(File srcFile, File dstFile) throws IOException {
+
         // output stream to open file to print compressed file to.
         FileOutputStream oFile;
         oFile = new FileOutputStream(dstFile);
@@ -26,7 +26,7 @@ public class Compressor {
 
         // array to count char frequencies in file, charNumbers index is the char code
         int[] charNumbers = new int[256];
-        int nextByte = 0;
+        int nextByte;
 
         // try block increments frequency for charNumbers index equal to char code
         while ((nextByte = reader.read()) != -1)
@@ -123,6 +123,10 @@ public class Compressor {
             System.out.println(dstFile + " compression was successful!\n");
     }
 
+    /**
+     * Custom data structure used to create the binary trie
+     */
+    @SuppressWarnings("UnusedDeclaration")
     private static class CharNode {
         private char data;
         private int freq;
@@ -131,60 +135,109 @@ public class Compressor {
         private CharNode parent;
         private String encoding;
 
+        /**
+         * Constructor of leaf nodes in the trie
+         * @param _data - data of node, a char
+         * @param _freq - freq of data, int
+         */
         public CharNode(char _data, int _freq) {
             data = _data;
             freq = _freq;
         }
 
+        /**
+         * Used for creation of parent nodes in the trie
+         * @param _left - left child
+         * @param _right - right child
+         * @param _freq - freq of data, int
+         */
         public CharNode(CharNode _left, CharNode _right, int _freq) {
             freq = _freq;
             left = _left;
             right = _right;
         }
 
+        /**
+         * Returns the data of the node
+         * @return - data of node, char
+         */
         public char getChar() {
             return data;
         }
 
+        /**
+         * Returns the frequency of the node
+         * @return - frequency of node, int
+         */
         public int getFreq() {
             return freq;
         }
 
+        /**
+         * Sets the parent to the passed node
+         * @param _parent - node to be set as parent of this node
+         */
         public void setParent(CharNode _parent) {
             parent = _parent;
         }
 
+        /**
+         * Gets the parent of the node
+         * @return - parent, CharNode
+         */
         public CharNode getParent() {
             return parent;
         }
 
+        /**
+         * Sets the encoding of the node.
+         * @param str - encoding, String
+         */
         public void setEncoding(String str) {
             encoding = str;
         }
 
+        /**
+         * Gets the encoding of the node
+         * @return - encoding, String
+         */
         public String getEncoding() {
             return encoding;
         }
 
+        /**
+         * Gets the left child of the node
+         * @return left child, Char Node
+         */
         public CharNode getLeft() {
             return left;
         }
 
+        /**
+         * Gets the right child of the node
+         * @return right child, Char Node
+         */
         public CharNode getRight() {
             return right;
         }
     }
 
+    /**
+     * Used to compare CharNodes.  Uses frequency and then ascii value as a tiebreaker
+     */
     private static class CharNodeComparator implements Comparator<CharNode> {
         public int compare(CharNode o1, CharNode o2) {
+            //check frequency
             if (o1.getFreq() > o2.getFreq())
                 return 1;
             else if (o1.getFreq() < o2.getFreq())
                 return -1;
+                //check ascii value
             else if (o1.getChar() < o2.getChar())
                 return -1;
             else if (o1.getChar() > o2.getChar())
                 return 1;
+                //equal
             else
                 return 0;
         }

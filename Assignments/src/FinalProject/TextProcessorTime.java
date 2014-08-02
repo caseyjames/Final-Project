@@ -4,8 +4,10 @@ package FinalProject;
 /**
  * @author Casey Nordgran
  * @author Tom Pridham
+ *
+ * Timer class for TextProcessor used for analysis
  */
-@SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings("ALL")
 public class TextProcessorTime {
 
     public static void main(String[] args) {
@@ -13,7 +15,8 @@ public class TextProcessorTime {
     }
 
     /**
-     * This timer runs experiments for add, deleteMin and findMin.
+     * This timer runs experiments for problem 5.
+     * Namely that of checking a word for accuracy of spelling with various tweaks
      */
     public static void problem5Timer() {
         // Timing experiment variables
@@ -53,12 +56,14 @@ public class TextProcessorTime {
             e.printStackTrace();
         }
         String[] s;
+        //used to iterate through list of String[] with varying length
         for (int l = 0; l < 9; l++) {
 
             s = wordlist.get(l);
             startTime = System.nanoTime();
             text.initializeComponents("wordstats1.txt");
 
+            //do work
             for (int i = 0; i < timesToLoop; i++) {
                 for (int j = 0; j < 8; j++) {
                     text.spellcheckWord(s[j], false);
@@ -86,6 +91,10 @@ public class TextProcessorTime {
     }
 
 
+    /**
+     * Used to do the timing required for problem 7 in the analysis.
+     * Namely, that of the compression, decompression and checkFile.
+     */
     public static void problem7Timer() {
         // Timing experiment variables
         long startTime, midpointTime, stopTime;
@@ -103,10 +112,12 @@ public class TextProcessorTime {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        //used to iterate through files
         for (int l = 0; l < 41; l+=5) {
 
             startTime = System.nanoTime();
 
+            //do work
             for (int i = 0; i < timesToLoop; i++) {
                 //text.spellcheckFile("goodluck"+l+".txt", "whatever" + l+".txt");
                 //text.compressFile("goodluck"+l+".txt", "whatever" + l+".txt");
@@ -123,9 +134,9 @@ public class TextProcessorTime {
             // from the cost of running the loop and computing square roots.
             // Average it over the number of runs.
             stopTime = System.nanoTime();
-            averageTime = (((midpointTime - startTime) - (stopTime - midpointTime)) / (timesToLoop * 8));
+            averageTime = (((midpointTime - startTime) - (stopTime - midpointTime)) / (timesToLoop));
 
-            // Cases 1b, 2b, 3b
+            //print time
             System.out.println(l + "\t" + averageTime);
         }
     }
