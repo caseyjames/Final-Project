@@ -7,6 +7,8 @@ import java.util.Scanner;
 
 
 /**
+ * This Project uses all of our own data structures for the extra credit.
+ *
  * @author Casey Nordgran
  * @author Tom Pridham
  *         <p/>
