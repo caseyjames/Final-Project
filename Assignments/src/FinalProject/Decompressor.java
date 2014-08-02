@@ -24,6 +24,10 @@ public class Decompressor {
         // attempt to open the file with FileInputStream then use DataInputStream
         FileInputStream inputStream;
         DataInputStream inFile;
+        if (_srcFile == null || _dstFile == null) {
+            System.err.println("Not valid files for decompression");
+            return;
+        }
         inputStream = new FileInputStream(_srcFile);
         inFile = new DataInputStream(inputStream);
 

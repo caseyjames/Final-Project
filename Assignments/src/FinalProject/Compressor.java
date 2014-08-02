@@ -14,6 +14,11 @@ public class Compressor {
 
     public void compress(File srcFile, File dstFile) throws IOException {
 
+        if (srcFile == null || dstFile == null) {
+            System.err.println("Not valid files for decompression");
+            return;
+        }
+
         // output stream to open file to print compressed file to.
         FileOutputStream oFile;
         oFile = new FileOutputStream(dstFile);

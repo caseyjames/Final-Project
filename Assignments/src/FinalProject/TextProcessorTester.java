@@ -1,5 +1,7 @@
 package FinalProject;
 
+import junit.framework.TestCase;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -7,7 +9,7 @@ import java.io.IOException;
  * @author Casey Nordgran
  * @author Tom Pridham
  */
-public class TextProcessorTester {
+public class TextProcessorTester extends TestCase{
     public void testCompressor() {
         Compressor comp = new Compressor();
         File test = new File("wordstats1.txt");
@@ -27,6 +29,8 @@ public class TextProcessorTester {
             comp.compress(junk, outJunk);
         } catch (IOException e) {
             e.printStackTrace();
+
+            fail();
         }
     }
 
@@ -49,6 +53,7 @@ public class TextProcessorTester {
             comp.decompress(junk, outJunk);
         } catch (IOException e) {
             e.printStackTrace();
+            fail();
         }
     }
 }
