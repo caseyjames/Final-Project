@@ -19,12 +19,12 @@ import java.util.Scanner;
  */
 @SuppressWarnings("ConstantConditions")
 public class Dictionary {
-//    private Node[] dictionary;
+    private Node[] dictionary;
 
     // variables used for testing only
-    public Node[] dictionary;
-    public int size;
-    public int capacity;
+//    public Node[] dictionary;
+//    public int size;
+//    public int capacity;
 
     /**
      * Constructor for Dictionary to hold all correctly spelled words and their frequencies.
@@ -33,10 +33,10 @@ public class Dictionary {
      */
     public Dictionary(File inputFile, int tableSize) {
         // the next 3 assigns are for testing only, use dictionary = new Node[nextPrime(tableSize)];
-        size = 0;
-        capacity = nextPrime(tableSize);
-        dictionary = new Node[capacity];
-//        dictionary = new Node[nextPrime(tableSize)];
+//        size = 0;
+//        capacity = nextPrime(tableSize);
+//        dictionary = new Node[capacity];
+        dictionary = new Node[nextPrime(tableSize)];
         Scanner inputStats = new Scanner("");
         //try reading file
         try {
@@ -194,7 +194,7 @@ public class Dictionary {
                 current = current.next;
             current.next = new Node(newName, newFreq);
         }
-        size++;
+//        size++;
     }
 
     /**

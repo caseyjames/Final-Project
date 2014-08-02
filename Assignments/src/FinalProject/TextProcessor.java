@@ -35,9 +35,9 @@ public class TextProcessor {
      */
     public static void main(String[] args0) {
         // first one for testing only
-        initializeComponents("wordstats1.txt");
+//        initializeComponents("wordstats1.txt");
 
-//        initializeComponents(args0[0]);
+        initializeComponents(args0[0]);
         if (dictionary == null)
             return;
 
@@ -128,6 +128,15 @@ public class TextProcessor {
 
     }
 
+    /**
+     * This method calls on the spellcheck method in dictionary. If the word is in the
+     * dictionary, the same word is return. If not the new alternate word found in the
+     * dictionary is returned. If there is not an alternate in the dictionary found than
+     * an empty string is returned and the appropriate message is displayed.
+     *
+     * @param word
+     * @param fileWrite
+     */
     public static void spellcheckWord(String word, boolean fileWrite) {
         String returnedWord = dictionary.spellCheck(word, fileWrite);
         if (returnedWord != null) {

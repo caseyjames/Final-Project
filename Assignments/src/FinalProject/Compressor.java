@@ -12,6 +12,13 @@ import java.util.Comparator;
  */
 public class Compressor {
 
+    /**
+     * Compresses the specified text files using huffmans algorithm and prints it to the
+     * specified destination file.
+     * @param srcFile uncompressed file to be compressed
+     * @param dstFile file name to print the newly compressed file to.
+     * @throws IOException
+     */
     public void compress(File srcFile, File dstFile) throws IOException {
 
         if (srcFile == null || dstFile == null) {
